@@ -1,0 +1,543 @@
+<?php
+session_start();
+?>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Login</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<style>
+
+body {
+	display: flex;
+	flex-flow: row wrap;
+	width: auto;
+	height: 100%;
+	background-image: url('tenis.jpg');
+	background-repeat: no-repeat;
+	background-position: center center;
+	background-attachment: fixed;
+	background-size: cover;
+	background-color: #464646;
+
+}
+
+span{
+	color: white;
+}
+a{
+	color: white;
+}
+
+table {
+	position: relative;
+	margin: 1.5rem;
+    border-collapse: collapse;
+    width: 80%;
+    border-radius: 15px;
+    box-shadow: 10px 10px 10px -2px rgba(0,0,0,1);
+
+
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+    
+}
+
+tr:nth-child(even){background-color: #3ffff2}
+tr{
+	background-color: #ffffff;
+
+}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+
+.button {
+	display: inline-block;
+  	margin: 1.5rem;
+  	margin-bottom: 0;
+  	/*margin-right: 50rem;*/
+  	padding: 0.50rem 1rem;
+	border: 0;
+	border-radius: 0.317rem;
+	background-color: #4CAF50;
+	color: #fff;
+	text-decoration: none;
+	font-weight: 700;
+	font-size: 1rem;
+  	line-height: 1.5;
+	cursor: pointer;
+	-webkit-appearance: none;
+	-webkit-font-smoothing: antialiased;
+	width: 7rem;
+	height: 5rem;
+}
+
+.button:hover {
+	opacity: 0.85;
+}
+
+.button:active {
+	box-shadow: inset 0 3px 4px hsla(0, 0%, 0%, 0.2);
+}
+
+.button:focus {
+	outline: thin dotted #444;
+	outline: 5px auto -webkit-focus-ring-color;
+	outline-offset: -2px;
+}
+
+
+
+
+</style>
+
+
+	
+</head>
+<body>
+
+<button onclick="Inicio()" class="button" id="btnFiltro" name="enviaFiltro" >Inicio</button><br>
+
+<button onclick="TodosLosDatos()" class="button" id="btnFiltro" name="enviaFiltro" >Mostrar Todos los Jugadores</button>
+
+<button onclick="Menores()" class="button" id="btnFiltro" name="enviaFiltro" >Solo Menores de edad</button> 
+
+<button onclick="Mayores()" class="button" id="btnFiltro" name="enviaFiltro" >Solo Mayores de edad</button>
+
+<button onclick="Socios()" class="button" id="btnFiltro" name="enviaFiltro" >Solo Socios</button>
+
+<button onclick="NoSocios()" class="button" id="btnFiltro" name="enviaFiltro" >Solo NO Socios</button>
+
+
+<button onclick="Hombres()" class="button" id="btnFiltro" name="enviaFiltro" >Solo Hombres</button><br>
+
+<button onclick="Mujeres()" class="button" id="btnFiltro" name="enviaFiltro" >Solo Mujeres</button>
+
+
+
+<button onclick="MujeresSocios()" class="button" id="btnFiltro" name="enviaFiltro" >Mujeres Socias</button>
+
+<button onclick="HombresSocios()" class="button" id="btnFiltro" name="enviaFiltro" >Hombres Socios</button>
+
+
+
+<table>
+    <tbody id="tbody"></tbody>
+</table>
+
+<span id="hola"></span>
+
+
+<script type="text/javascript">
+	
+	function Inicio(){
+		location.replace("index.php");
+	}
+
+
+
+	function TodosLosDatos(){
+		var url = "http://localhost/tenis/PEDROPABLO/Proyecto_Tenis/jugadores.json";
+
+		var jsonFile = new XMLHttpRequest();
+		    jsonFile.open("GET",url,true);
+		    jsonFile.send();
+
+		    jsonFile.onreadystatechange = function() {
+		        if (jsonFile.readyState== 4 && jsonFile.status == 200) {
+
+
+					var marray = JSON.parse(jsonFile.responseText);
+
+
+					var globalCounter = 0;
+					var tbody = document.getElementById('tbody');
+					tbody.innerHTML = "";
+					var th = "<tr> <th>Nombre</th> <th>Apellidos</th> <th>Telefono</th> <th>email</th> <th>Nivel Tenis</th> <th>Nivel Padel</th> <th>Edad</th> <th>Sexo</th> <th>Socio</th> <th>Disponibilidad</th> <th>Observaciones</th></tr>";
+					tbody.innerHTML += th;
+					for (var i = 0; i < marray.length; i++) {
+					    var tr = "<tr>";
+
+
+					    tr += "<td>" + marray[i].nombre + "</td>" + "<td>" + marray[i].apellidos + "</td>" + "<td>" + marray[i].telefono + "</td>" + "<td>" + marray[i].email + "</td>" + "<td>" + marray[i].nivel_tenis + "</td>" + "<td>" + marray[i].nivel_padel + "</td>" + "<td>" + marray[i].edad + "</td>" + "<td>" + marray[i].sexo + "</td>" + "<td>" + marray[i].esSocio + "</td>" + "<td>" + marray[i].disponibilidad + "</td>" + "<td>" + marray[i].Observaciones + "</td>";
+					    tr += "</tr>";
+
+					    tbody.innerHTML += tr;
+					}
+
+		        }
+		    }
+	}
+
+
+	function Menores(){
+		
+		    $.ajax({
+		        url: "filtradorMenores.php", 
+		        success: function(result){
+		           alert('Datos cargados correctamente');
+		            var url = "http://localhost/tenis/PEDROPABLO/Proyecto_Tenis/jugadoresMenores.json";
+
+					var jsonFile = new XMLHttpRequest();
+					    jsonFile.open("GET",url,true);
+					    jsonFile.send();
+
+					    var correcto = false;
+
+					    jsonFile.onreadystatechange = function() {
+					        if (jsonFile.readyState== 4 && jsonFile.status == 200) {
+
+								var marray = JSON.parse(jsonFile.responseText);
+
+
+								
+
+
+								var globalCounter = 0;
+								var tbody = document.getElementById('tbody');
+
+								tbody.innerHTML = "";
+
+								var th = "<tr> <th>Nombre</th> <th>Apellidos</th> <th>Telefono</th> <th>email</th> <th>Nivel Tenis</th> <th>Nivel Padel</th> <th>Edad</th> <th>Sexo</th> <th>Socio</th> <th>Disponibilidad</th> <th>Observaciones</th></tr>";
+								tbody.innerHTML += th;
+								for (var i = 0; i < marray.length; i++) {
+								    var tr = "<tr>";
+
+
+								    tr += "<td>" + marray[i].nombre + "</td>" + "<td>" + marray[i].apellidos + "</td>" + "<td>" + marray[i].telefono + "</td>" + "<td>" + marray[i].email + "</td>" + "<td>" + marray[i].nivel_tenis + "</td>" + "<td>" + marray[i].nivel_padel + "</td>" + "<td>" + marray[i].edad + "</td>" + "<td>" + marray[i].sexo + "</td>" + "<td>" + marray[i].esSocio + "</td>" + "<td>" + marray[i].disponibilidad + "</td>" + "<td>" + marray[i].Observaciones + "</td>";
+								    tr += "</tr>";
+
+								    tbody.innerHTML += tr;
+								}
+					        }
+					    }
+
+
+				}
+		    });
+		
+	}
+
+
+
+	function Mayores(){
+		
+	    $.ajax({
+	        url: "filtradorMayores.php", 
+	        success: function(result){
+	           alert('Datos cargados correctamente');
+	            var url = "http://localhost/tenis/PEDROPABLO/Proyecto_Tenis/jugadoresMayores.json";
+
+				var jsonFile = new XMLHttpRequest();
+				    jsonFile.open("GET",url,true);
+				    jsonFile.send();
+
+			    var correcto = false;
+
+			    jsonFile.onreadystatechange = function() {
+			        if (jsonFile.readyState== 4 && jsonFile.status == 200) {
+
+						var marray = JSON.parse(jsonFile.responseText);
+
+						var globalCounter = 0;
+						var tbody = document.getElementById('tbody');
+
+						tbody.innerHTML = "";
+
+						var th = "<tr> <th>Nombre</th> <th>Apellidos</th> <th>Telefono</th> <th>email</th> <th>Nivel Tenis</th> <th>Nivel Padel</th> <th>Edad</th> <th>Sexo</th> <th>Socio</th> <th>Disponibilidad</th> <th>Observaciones</th></tr>";
+						tbody.innerHTML += th;
+						for (var i = 0; i < marray.length; i++) {
+						    var tr = "<tr>";
+
+
+						    tr += "<td>" + marray[i].nombre + "</td>" + "<td>" + marray[i].apellidos + "</td>" + "<td>" + marray[i].telefono + "</td>" + "<td>" + marray[i].email + "</td>" + "<td>" + marray[i].nivel_tenis + "</td>" + "<td>" + marray[i].nivel_padel + "</td>" + "<td>" + marray[i].edad + "</td>" + "<td>" + marray[i].sexo + "</td>" + "<td>" + marray[i].esSocio + "</td>" + "<td>" + marray[i].disponibilidad + "</td>" + "<td>" + marray[i].Observaciones + "</td>";
+						    tr += "</tr>";
+
+						    tbody.innerHTML += tr;
+						}
+			        }
+			    }
+			}
+	    });
+	}
+
+	function Socios(){
+		
+	    $.ajax({
+	        url: "filtradorSocio.php", 
+	        success: function(result){
+	           alert('Datos cargados correctamente');
+	            var url = "http://localhost/tenis/PEDROPABLO/Proyecto_Tenis/jugadoresSocios.json";
+
+				var jsonFile = new XMLHttpRequest();
+				    jsonFile.open("GET",url,true);
+				    jsonFile.send();
+
+			    var correcto = false;
+
+			    jsonFile.onreadystatechange = function() {
+			        if (jsonFile.readyState== 4 && jsonFile.status == 200) {
+
+						var marray = JSON.parse(jsonFile.responseText);
+
+
+						
+
+
+						var globalCounter = 0;
+						var tbody = document.getElementById('tbody');
+
+						tbody.innerHTML = "";
+
+						var th = "<tr> <th>Nombre</th> <th>Apellidos</th> <th>Telefono</th> <th>email</th> <th>Nivel Tenis</th> <th>Nivel Padel</th> <th>Edad</th> <th>Sexo</th> <th>Socio</th> <th>Disponibilidad</th> <th>Observaciones</th></tr>";
+						tbody.innerHTML += th;
+						for (var i = 0; i < marray.length; i++) {
+						    var tr = "<tr>";
+
+
+						    tr += "<td>" + marray[i].nombre + "</td>" + "<td>" + marray[i].apellidos + "</td>" + "<td>" + marray[i].telefono + "</td>" + "<td>" + marray[i].email + "</td>" + "<td>" + marray[i].nivel_tenis + "</td>" + "<td>" + marray[i].nivel_padel + "</td>" + "<td>" + marray[i].edad + "</td>" + "<td>" + marray[i].sexo + "</td>" + "<td>" + marray[i].esSocio + "</td>" + "<td>" + marray[i].disponibilidad + "</td>" + "<td>" + marray[i].Observaciones + "</td>";
+						    tr += "</tr>";
+
+						    tbody.innerHTML += tr;
+						}
+			        }
+			    }
+			}
+	    });
+	}
+
+
+	function NoSocios(){
+		
+	    $.ajax({
+	        url: "filtradorNoSocios.php", 
+	        success: function(result){
+	           alert('Datos cargados correctamente');
+	            var url = "http://localhost/tenis/PEDROPABLO/Proyecto_Tenis/jugadoresNoSocios.json";
+
+				var jsonFile = new XMLHttpRequest();
+				    jsonFile.open("GET",url,true);
+				    jsonFile.send();
+
+			    var correcto = false;
+
+			    jsonFile.onreadystatechange = function() {
+			        if (jsonFile.readyState== 4 && jsonFile.status == 200) {
+
+						var marray = JSON.parse(jsonFile.responseText);
+
+
+						
+
+
+						var globalCounter = 0;
+						var tbody = document.getElementById('tbody');
+
+						tbody.innerHTML = "";
+
+						var th = "<tr> <th>Nombre</th> <th>Apellidos</th> <th>Telefono</th> <th>email</th> <th>Nivel Tenis</th> <th>Nivel Padel</th> <th>Edad</th> <th>Sexo</th> <th>Socio</th> <th>Disponibilidad</th> <th>Observaciones</th></tr>";
+						tbody.innerHTML += th;
+						for (var i = 0; i < marray.length; i++) {
+						    var tr = "<tr>";
+
+
+						    tr += "<td>" + marray[i].nombre + "</td>" + "<td>" + marray[i].apellidos + "</td>" + "<td>" + marray[i].telefono + "</td>" + "<td>" + marray[i].email + "</td>" + "<td>" + marray[i].nivel_tenis + "</td>" + "<td>" + marray[i].nivel_padel + "</td>" + "<td>" + marray[i].edad + "</td>" + "<td>" + marray[i].sexo + "</td>" + "<td>" + marray[i].esSocio + "</td>" + "<td>" + marray[i].disponibilidad + "</td>" + "<td>" + marray[i].Observaciones + "</td>";
+						    tr += "</tr>";
+
+						    tbody.innerHTML += tr;
+						}
+			        }
+			    }
+			}
+	    });
+	}
+	function Hombres(){
+		
+	    $.ajax({
+	        url: "filtradorHombres.php", 
+	        success: function(result){
+	           alert('Datos cargados correctamente');
+	            var url = "http://localhost/tenis/PEDROPABLO/Proyecto_Tenis/jugadoresHombres.json";
+
+				var jsonFile = new XMLHttpRequest();
+				    jsonFile.open("GET",url,true);
+				    jsonFile.send();
+
+			    var correcto = false;
+
+			    jsonFile.onreadystatechange = function() {
+			        if (jsonFile.readyState== 4 && jsonFile.status == 200) {
+
+						var marray = JSON.parse(jsonFile.responseText);
+
+
+						
+
+
+						var globalCounter = 0;
+						var tbody = document.getElementById('tbody');
+
+						tbody.innerHTML = "";
+
+						var th = "<tr> <th>Nombre</th> <th>Apellidos</th> <th>Telefono</th> <th>email</th> <th>Nivel Tenis</th> <th>Nivel Padel</th> <th>Edad</th> <th>Sexo</th> <th>Socio</th> <th>Disponibilidad</th> <th>Observaciones</th></tr>";
+						tbody.innerHTML += th;
+						for (var i = 0; i < marray.length; i++) {
+						    var tr = "<tr>";
+
+
+						    tr += "<td>" + marray[i].nombre + "</td>" + "<td>" + marray[i].apellidos + "</td>" + "<td>" + marray[i].telefono + "</td>" + "<td>" + marray[i].email + "</td>" + "<td>" + marray[i].nivel_tenis + "</td>" + "<td>" + marray[i].nivel_padel + "</td>" + "<td>" + marray[i].edad + "</td>" + "<td>" + marray[i].sexo + "</td>" + "<td>" + marray[i].esSocio + "</td>" + "<td>" + marray[i].disponibilidad + "</td>" + "<td>" + marray[i].Observaciones + "</td>";
+						    tr += "</tr>";
+
+						    tbody.innerHTML += tr;
+						}
+			        }
+			    }
+			}
+	    });
+	}
+	function Mujeres(){
+		
+	    $.ajax({
+	        url: "filtradorMujeres.php", 
+	        success: function(result){
+	           alert('Datos cargados correctamente');
+	            var url = "http://localhost/tenis/PEDROPABLO/Proyecto_Tenis/jugadoresMujeres.json";
+
+				var jsonFile = new XMLHttpRequest();
+				    jsonFile.open("GET",url,true);
+				    jsonFile.send();
+
+			    var correcto = false;
+
+			    jsonFile.onreadystatechange = function() {
+			        if (jsonFile.readyState== 4 && jsonFile.status == 200) {
+
+						var marray = JSON.parse(jsonFile.responseText);
+
+
+						
+
+
+						var globalCounter = 0;
+						var tbody = document.getElementById('tbody');
+
+						tbody.innerHTML = "";
+
+						var th = "<tr> <th>Nombre</th> <th>Apellidos</th> <th>Telefono</th> <th>email</th> <th>Nivel Tenis</th> <th>Nivel Padel</th> <th>Edad</th> <th>Sexo</th> <th>Socio</th> <th>Disponibilidad</th> <th>Observaciones</th></tr>";
+						tbody.innerHTML += th;
+						for (var i = 0; i < marray.length; i++) {
+						    var tr = "<tr>";
+
+
+						    tr += "<td>" + marray[i].nombre + "</td>" + "<td>" + marray[i].apellidos + "</td>" + "<td>" + marray[i].telefono + "</td>" + "<td>" + marray[i].email + "</td>" + "<td>" + marray[i].nivel_tenis + "</td>" + "<td>" + marray[i].nivel_padel + "</td>" + "<td>" + marray[i].edad + "</td>" + "<td>" + marray[i].sexo + "</td>" + "<td>" + marray[i].esSocio + "</td>" + "<td>" + marray[i].disponibilidad + "</td>" + "<td>" + marray[i].Observaciones + "</td>";
+						    tr += "</tr>";
+
+						    tbody.innerHTML += tr;
+						}
+			        }
+			    }
+			}
+	    });
+	}
+
+	function MujeresSocios(){
+		
+	    $.ajax({
+	        url: "filtradorMujeresSocios.php", 
+	        success: function(result){
+	           alert('Datos cargados correctamente');
+	            var url = "http://localhost/tenis/PEDROPABLO/Proyecto_Tenis/jugadoresMujeresSocios.json";
+
+				var jsonFile = new XMLHttpRequest();
+				    jsonFile.open("GET",url,true);
+				    jsonFile.send();
+
+			    var correcto = false;
+
+			    jsonFile.onreadystatechange = function() {
+			        if (jsonFile.readyState== 4 && jsonFile.status == 200) {
+
+						var marray = JSON.parse(jsonFile.responseText);
+
+
+						
+
+
+						var globalCounter = 0;
+						var tbody = document.getElementById('tbody');
+
+						tbody.innerHTML = "";
+
+						var th = "<tr> <th>Nombre</th> <th>Apellidos</th> <th>Telefono</th> <th>email</th> <th>Nivel Tenis</th> <th>Nivel Padel</th> <th>Edad</th> <th>Sexo</th> <th>Socio</th> <th>Disponibilidad</th> <th>Observaciones</th></tr>";
+						tbody.innerHTML += th;
+						for (var i = 0; i < marray.length; i++) {
+						    var tr = "<tr>";
+
+
+						    tr += "<td>" + marray[i].nombre + "</td>" + "<td>" + marray[i].apellidos + "</td>" + "<td>" + marray[i].telefono + "</td>" + "<td>" + marray[i].email + "</td>" + "<td>" + marray[i].nivel_tenis + "</td>" + "<td>" + marray[i].nivel_padel + "</td>" + "<td>" + marray[i].edad + "</td>" + "<td>" + marray[i].sexo + "</td>" + "<td>" + marray[i].esSocio + "</td>" + "<td>" + marray[i].disponibilidad + "</td>" + "<td>" + marray[i].Observaciones + "</td>";
+						    tr += "</tr>";
+
+						    tbody.innerHTML += tr;
+						}
+			        }
+			    }
+			}
+	    });
+	}
+
+	function HombresSocios(){
+		
+	    $.ajax({
+	        url: "filtradorHombresSocios.php", 
+	        success: function(result){
+	           alert('Datos cargados correctamente');
+	            var url = "http://localhost/tenis/PEDROPABLO/Proyecto_Tenis/jugadoresHombresSocios.json";
+
+				var jsonFile = new XMLHttpRequest();
+				    jsonFile.open("GET",url,true);
+				    jsonFile.send();
+
+			    var correcto = false;
+
+			    jsonFile.onreadystatechange = function() {
+			        if (jsonFile.readyState== 4 && jsonFile.status == 200) {
+
+						var marray = JSON.parse(jsonFile.responseText);
+
+
+						
+
+
+						var globalCounter = 0;
+						var tbody = document.getElementById('tbody');
+
+						tbody.innerHTML = "";
+
+						var th = "<tr> <th>Nombre</th> <th>Apellidos</th> <th>Telefono</th> <th>email</th> <th>Nivel Tenis</th> <th>Nivel Padel</th> <th>Edad</th> <th>Sexo</th> <th>Socio</th> <th>Disponibilidad</th> <th>Observaciones</th></tr>";
+						tbody.innerHTML += th;
+						for (var i = 0; i < marray.length; i++) {
+						    var tr = "<tr>";
+
+
+						    tr += "<td>" + marray[i].nombre + "</td>" + "<td>" + marray[i].apellidos + "</td>" + "<td>" + marray[i].telefono + "</td>" + "<td>" + marray[i].email + "</td>" + "<td>" + marray[i].nivel_tenis + "</td>" + "<td>" + marray[i].nivel_padel + "</td>" + "<td>" + marray[i].edad + "</td>" + "<td>" + marray[i].sexo + "</td>" + "<td>" + marray[i].esSocio + "</td>" + "<td>" + marray[i].disponibilidad + "</td>" + "<td>" + marray[i].Observaciones + "</td>";
+						    tr += "</tr>";
+
+						    tbody.innerHTML += tr;
+						}
+			        }
+			    }
+			}
+	    });
+	}
+
+</script>
+
+</body>
+</html>
